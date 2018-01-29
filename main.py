@@ -52,6 +52,13 @@ def initLuminanceTab():
     global size
     global pixelsLuminance
     global pixels
+
+    print("Filling pixels luminance tab...")
+    pixelsLuminance = np.zeros((size))
+    for idxY, arrayPix in enumerate(pixels):
+        for idxX, rowPix in enumerate(arrayPix):
+            pixelsLuminance[idxY][idxX] = rowPix[0] * 0.2126 + rowPix[1] * 0.7152 + rowPix[2] * 0.0722
+    print("Done !")
     
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -63,5 +70,5 @@ if __name__ == '__main__':
     except PermissionError:
         errorQuit("'" + sys.argv[1] + "': Image not found.")
     imageToList()
-    createLuminanceImage("out.jpg")
-    
+    #createLuminanceImage("out.jpg")
+    initLuminanceTab()
