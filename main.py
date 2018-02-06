@@ -3,12 +3,14 @@ from operator import itemgetter
 import sys
 import numpy as np
 
+np.set_printoptions(threshold=np.nan)
+
 originalPic = None
 pixels = None
 renderPic = None
 pixelsLuminanceImage = None
 pixelsLuminance = None
-luminanceThreshold = 0.0
+luminanceThreshold = 90.0
 size = (0, 0)
 
 def errorQuit(message):
@@ -71,7 +73,6 @@ def getLuminanceIntervals(array):
     idxBeg = 0
     for idx, lum in enumerate(array):
         if lum >= luminanceThreshold and beginInter == False:
-            print("PLop")
             beginInter = True
             idxBeg = idx
         elif lum < luminanceThreshold and beginInter == True:
@@ -90,16 +91,14 @@ def sortByLuminance(name):
     renderPic = np.copy(pixels)
     print("Sorting...")
     for luminanceArray, pixelsRender in zip(pixelsLuminance, renderPic):
-        intervals = getLuminanceIntervals(luminanceArray)
-        print(intervals)
+        intervals = getLuminanceIntervals(luminanceArray)        
         for inter in intervals:
             lum = luminanceArray[inter[0]:inter[1]]
             pix = pixelsRender[inter[0]:inter[1]]
             sortedList = sorted(list(zip(lum, pix)), key=itemgetter(0))
-            replaceValues = [x for _, x in sortedList]
+            replaceValues = np.asarray([x for _, x in sortedList])
             pixelsRender[inter[0]:inter[1]] = replaceValues
-    print("Sorted !")
-    print(renderPic)
+    print("Sorted")
     print("Saving image...")
     image = Image.fromarray(renderPic.astype('uint8'))
     image.save(name, "JPEG", quality=80, optimize=True, progressive=True)
